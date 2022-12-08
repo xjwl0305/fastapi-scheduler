@@ -27,7 +27,7 @@ sched = BackgroundScheduler()
 class CallSched(BaseModel):
     start_time: str
     writing_cycle: int
-    id: str
+    account: str
     uid: int
 
 
@@ -105,12 +105,12 @@ async def root():
 
 @app.get("/sched/")
 async def scheduler(callSched: CallSched):
-    scheduling_job(callSched.writing_cycle, callSched.start_time, callSched.id, callSched.uid)
+    scheduling_job(callSched.writing_cycle, callSched.start_time, callSched.account, callSched.uid)
     return callSched
 
 
 @app.get("/sched_change/")
 async def modify(callSched: CallSched):
     sched.remove_job(callSched.id)
-    scheduling_job(callSched.writing_cycle, callSched.start_time, callSched.id, callSched.uid)
+    scheduling_job(callSched.writing_cycle, callSched.start_time, callSched.account, callSched.uid)
     return callSched

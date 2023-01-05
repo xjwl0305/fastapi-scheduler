@@ -98,7 +98,7 @@ def job(shed_id, uid):
 
 
 def scheduling_job(interval, start_time, id, uid):
-    sched.add_job(lambda: job(id, uid), 'interval', seconds=interval, start_date=start_time, id=id)
+    sched.add_job(lambda: job(id, uid), 'interval', hours=interval, start_date=start_time, id=id)
     
 
 @app.get("/")

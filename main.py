@@ -1,6 +1,6 @@
 import pymysql
 
-from fastapi                 import FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -9,35 +9,34 @@ from datetime import datetime, timedelta
 
 from pydantic import BaseModel
 
-
 app = FastAPI()
 origins = [
     "*"
 ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins     = origins,
-    allow_credentials = True,
-    allow_methods     = ["*"],
-    allow_headers     = ["*"],
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 conn = pymysql.connect(
-                host     = 'earlivery.cckpfejc2svw.ap-northeast-2.rds.amazonaws.com',
-                user     = 'admin',
-                password = 'earlivery0102!',
-                db       = 'earlivery',
-                charset  = 'utf8'
-                )
+    host='earlivery.cckpfejc2svw.ap-northeast-2.rds.amazonaws.com',
+    user='admin',
+    password='earlivery0102!',
+    db='earlivery',
+    charset='utf8'
+)
 
 sched = BackgroundScheduler(timezone='Asia/Seoul')
 sched.start()
 
 
 class CallSched(BaseModel):
-    start_time   : str
+    start_time: str
     writing_cycle: int
-    account      : str
-    uid          : int
+    account: str
+    uid: int
 
 
 def job(shed_id, uid):
@@ -55,17 +54,17 @@ def job(shed_id, uid):
             cur.execute("select last_insert_id() as last")
             summary_id = cur.fetchall()[0][0]
             for data in report_form:
-                device_number    = data[0]
-                item_name        = data[1]
-                category         = data[2]
-                code             = data[3]
-                weight           = data[4]
-                battery          = data[5]
-                branch_name      = data[6]
-                warehouse_name   = data[7]
-                layer_name       = data[8]
-                last_date_time   = data[9]
-                data_interval    = data[10]
+                device_number = data[0]
+                item_name = data[1]
+                category = data[2]
+                code = data[3]
+                weight = data[4]
+                battery = data[5]
+                branch_name = data[6]
+                warehouse_name = data[7]
+                layer_name = data[8]
+                last_date_time = data[9]
+                data_interval = data[10]
                 container_weight = data[11]
                 connect_status = 'normal'
                 cur.execute(
@@ -87,8 +86,9 @@ def job(shed_id, uid):
                 usage_weight = total_stock[0][0] - pretotal_stock[0][0]
                 if usage_weight < 0:
                     usage_weight = 0
-                val = (device_number, item_name, category, code, weight, battery, branch_name, warehouse_name, layer_name,
-                       connect_status, last_date_time, data_interval, usage_weight, container_weight, summary_id)
+                val = (
+                device_number, item_name, category, code, weight, battery, branch_name, warehouse_name, layer_name,
+                connect_status, last_date_time, data_interval, usage_weight, container_weight, summary_id)
                 cur.execute(
                     "insert into summary_content (device_number, item_name, item_category, item_code, weight, battery, branch_name, warehouse_name, layer_name, connection, last_date_time, `interval`, usage_weight, container_weight, summary_id) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     val)
@@ -99,7 +99,7 @@ def job(shed_id, uid):
 
 def scheduling_job(interval, start_time, id, uid):
     sched.add_job(lambda: job(id, uid), 'interval', hours=interval, start_date=start_time, id=id)
-    
+
 
 @app.get("/")
 async def root():

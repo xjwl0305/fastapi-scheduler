@@ -20,13 +20,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-conn = pymysql.connect(
-    host='earlivery.cckpfejc2svw.ap-northeast-2.rds.amazonaws.com',
-    user='admin',
-    password='earlivery0102!',
-    db='earlivery',
-    charset='utf8'
-)
+
 
 sched = BackgroundScheduler(timezone='Asia/Seoul')
 sched.start()
@@ -40,6 +34,13 @@ class CallSched(BaseModel):
 
 
 def job(shed_id, uid):
+    conn = pymysql.connect(
+        host='earlivery.cckpfejc2svw.ap-northeast-2.rds.amazonaws.com',
+        user='admin',
+        password='earlivery0102!',
+        db='earlivery',
+        charset='utf8'
+    )
     current_date = datetime.strptime(datetime.today().strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
     with conn:
         with conn.cursor() as cur:

@@ -21,7 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 sched = BackgroundScheduler(timezone='Asia/Seoul')
 sched.start()
 
@@ -84,12 +83,15 @@ def job(shed_id, uid):
                     "select sum(drd.weight) from (select earlivery_device_id, max(created_at) as max_date from device_raw_data where device_raw_data.created_at not in (select max(created_at) from device_raw_data group by earlivery_device_id) group by earlivery_device_id) as t2, earlivery_device left join item i on earlivery_device.item_id = i.id left join device_raw_data drd on earlivery_device.id = drd.earlivery_device_id where earlivery_device.device_number = %s and t2.max_date = drd.created_at",
                     device_number)
                 pretotal_stock = cur.fetchall()
-                usage_weight = total_stock[0][0] - pretotal_stock[0][0]
+                try:
+                    usage_weight = total_stock[0][0] - pretotal_stock[0][0]
+                except:
+                    usage_weight = total_stock[0][0]
                 if usage_weight < 0:
                     usage_weight = 0
                 val = (
-                device_number, item_name, category, code, weight, battery, branch_name, warehouse_name, layer_name,
-                connect_status, last_date_time, data_interval, usage_weight, container_weight, summary_id)
+                    device_number, item_name, category, code, weight, battery, branch_name, warehouse_name, layer_name,
+                    connect_status, last_date_time, data_interval, usage_weight, container_weight, summary_id)
                 cur.execute(
                     "insert into summary_content (device_number, item_name, item_category, item_code, weight, battery, branch_name, warehouse_name, layer_name, connection, last_date_time, `interval`, usage_weight, container_weight, summary_id) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     val)

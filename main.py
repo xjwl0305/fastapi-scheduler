@@ -109,13 +109,13 @@ async def root():
     return {"message": "tripod-scheduler"}
 
 
-@app.get("/sched/")
+@app.post("/sched/")
 async def scheduler(callSched: CallSched):
     scheduling_job(callSched.writing_cycle, callSched.start_time, callSched.account, callSched.uid)
     return callSched
 
 
-@app.get("/sched_change/")
+@app.post("/sched_change/")
 async def modify(callSched: CallSched):
     sched.remove_job(callSched.account)
     scheduling_job(callSched.writing_cycle, callSched.start_time, callSched.account, callSched.uid)

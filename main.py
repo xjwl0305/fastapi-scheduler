@@ -89,6 +89,7 @@ def job(shed_id, uid):
                     usage_weight = total_stock[0][0]
                 if usage_weight < 0:
                     usage_weight = 0
+
                 val = (
                     device_number, item_name, category, code, weight, battery, branch_name, warehouse_name, layer_name,
                     connect_status, last_date_time, data_interval, usage_weight, container_weight, summary_id)
@@ -97,7 +98,7 @@ def job(shed_id, uid):
                     val)
                 conn.commit()
                 a = 1
-            print(connect_check)
+        print(shed_id + ' is complete')
 
 
 def scheduling_job(interval, start_time, id, uid):

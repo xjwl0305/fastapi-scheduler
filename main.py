@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from pydantic import BaseModel
 
 app = FastAPI()
+#app.router.redirect_slashes = False
 origins = [
     "*"
 ]

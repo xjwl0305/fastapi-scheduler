@@ -120,7 +120,7 @@ async def scheduler(callSched: CallSched):
 
 @app.post("/sched_change/")
 async def modify(callSched: CallSched):
-    sched.remove_job(callSched.account)
+    #sched.remove_job(callSched.account)
     print('Detect request : ' + str(callSched.writing_cycle) + ' ' + callSched.start_time + ' ' + callSched.account)
     scheduling_job(callSched.writing_cycle, callSched.start_time, callSched.account, callSched.uid)
 

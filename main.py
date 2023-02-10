@@ -112,11 +112,11 @@ async def root():
 
 
 @app.post("/sched/")
-async def scheduler(callSched: CallSched):
-    print('Detect request : ' + str(callSched.writing_cycle) + ' ' + callSched.start_time + ' ' + callSched.account)
-    scheduling_job(callSched.writing_cycle, callSched.start_time, callSched.account, callSched.uid)
+async def scheduler(uid: int, writing_cycle: int, start_time: str, account: str):
+    print('Detect request : ' + str(writing_cycle) + ' ' + start_time + ' ' + account)
+    scheduling_job(writing_cycle, start_time, account, uid)
 
-    return callSched
+    return {'account': account}
 
 
 @app.post("/sched_change/")

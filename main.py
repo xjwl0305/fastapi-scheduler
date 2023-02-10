@@ -1,6 +1,6 @@
 import pymysql
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -120,9 +120,9 @@ async def scheduler(callSched: CallSched):
 
 
 @app.post("/sched_change/")
-async def modify(callSched: CallSched):
-    sched.remove_job(callSched.account)
-    print('Detect request : ' + str(callSched.writing_cycle) + ' ' + callSched.start_time + ' ' + callSched.account)
-    scheduling_job(callSched.writing_cycle, callSched.start_time, callSched.account, callSched.uid)
+async def modify(uid: int = Form(), writing_cycle: int = Form(), start_time : str = Form(), account: str = Form()):
+    sched.remove_job(account)
+    print('Detect request : ' + str(writing_cycle) + ' ' + start_time + ' ' + account)
+    scheduling_job(writing_cycle, start_time, account, uid)
 
-    return callSched
+    return account

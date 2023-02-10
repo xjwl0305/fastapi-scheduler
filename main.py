@@ -125,4 +125,4 @@ async def modify(uid: int = Form(), writing_cycle: int = Form(), start_time : st
     print('Detect request : ' + str(writing_cycle) + ' ' + start_time + ' ' + account)
     scheduling_job(writing_cycle, start_time, account, uid)
 
-    return account
+    return {'account': account}

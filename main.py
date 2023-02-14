@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from pydantic import BaseModel
 
 app = FastAPI()
-#app.router.redirect_slashes = False
+# app.router.redirect_slashes = False
 origins = [
     "*"
 ]
@@ -77,13 +77,13 @@ def job(shed_id, uid):
                 if connect_check[2] < compare_date:
                     connect_status = 'warning'
                 cur.execute(
-                    "select drd.weight from (select earlivery_device_id, max(created_at) as max_date from device_raw_data group by earlivery_device_id) as t2, earlivery_device left join item i on earlivery_device.item_id = i.id left join device_raw_data drd on earlivery_device.id = drd.earlivery_device_id\n"+
-                       "where device_number = %s and t2.max_date = drd.created_at and t2.earlivery_device_id = drd.earlivery_device_id",
+                    "select drd.weight from (select earlivery_device_id, max(created_at) as max_date from device_raw_data group by earlivery_device_id) as t2, earlivery_device left join item i on earlivery_device.item_id = i.id left join device_raw_data drd on earlivery_device.id = drd.earlivery_device_id\n" +
+                    "where device_number = %s and t2.max_date = drd.created_at and t2.earlivery_device_id = drd.earlivery_device_id",
                     device_number)
                 total_stock = cur.fetchall()
                 cur.execute(
-                    "select drd.weight from (select earlivery_device_id, max(created_at) as max_date from device_raw_data where device_raw_data.created_at not in (select max(created_at) from device_raw_data group by earlivery_device_id) group by earlivery_device_id) as t2, earlivery_device left join item i on earlivery_device.item_id = i.id left join device_raw_data drd on earlivery_device.id = drd.earlivery_device_id\n"+
-                       "where earlivery_device.device_number = %s and t2.max_date = drd.created_at and t2.earlivery_device_id = drd.earlivery_device_id",
+                    "select drd.weight from (select earlivery_device_id, max(created_at) as max_date from device_raw_data where device_raw_data.created_at not in (select max(created_at) from device_raw_data group by earlivery_device_id) group by earlivery_device_id) as t2, earlivery_device left join item i on earlivery_device.item_id = i.id left join device_raw_data drd on earlivery_device.id = drd.earlivery_device_id\n" +
+                    "where earlivery_device.device_number = %s and t2.max_date = drd.created_at and t2.earlivery_device_id = drd.earlivery_device_id",
                     device_number)
                 pretotal_stock = cur.fetchall()
                 try:
@@ -115,7 +115,7 @@ async def root():
 
 @app.post("/sched/")
 async def scheduler(uid: int, writing_cycle: int, start_time: str, account: str):
-    print('Detect request : ' + str(writing_cycle) + ' ' + start_time + ' ' + account)
+    print('sched Detect request : ' + str(writing_cycle) + ' ' + start_time + ' ' + account)
     scheduling_job(writing_cycle, start_time, account, uid)
 
     return {'account': account}
@@ -124,10 +124,11 @@ async def scheduler(uid: int, writing_cycle: int, start_time: str, account: str)
 @app.post("/sched_change/")
 async def modify(uid: int, writing_cycle: int, start_time: str, account: str):
     sched.remove_job(account)
-    print('Detect request : ' + str(writing_cycle) + ' ' + start_time + ' ' + account)
+    print('sched_change Detect request : ' + str(writing_cycle) + ' ' + start_time + ' ' + account)
     scheduling_job(writing_cycle, start_time, account, uid)
 
     return {'account': account}
+
 
 @app.post("/test")
 async def test():
